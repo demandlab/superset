@@ -23,7 +23,7 @@ from typing import Any
 
 from flask_appbuilder.models.sqla import Model
 
-from superset import db
+from superset import db, is_feature_enabled
 from superset.commands.base import BaseCommand
 from superset.commands.database.exceptions import (
     DatabaseExistsValidationError,
@@ -31,6 +31,7 @@ from superset.commands.database.exceptions import (
     DatabaseNotFoundError,
     DatabaseUpdateFailedError,
     MissingOAuth2TokenError,
+    SSHTunnelingNotEnabledError,
 )
 from superset.commands.database.sync_permissions import SyncPermissionsCommand
 from superset.daos.database import DatabaseDAO
@@ -174,6 +175,11 @@ class UpdateDatabaseCommand(BaseCommand):
             db.session.query(model).filter_by(**predicate).update(update)
 
     def validate(self) -> None:
+        if self._properties.get("ssh_tunnel") and not not is_feature_enabled(
+            "SSH_TUNNELING"
+        ):
+            raise SSHTunnelingNotEnabledError()
+
         if database_name := self._properties.get("database_name"):
             if not DatabaseDAO.validate_update_uniqueness(
                 self._model_id,

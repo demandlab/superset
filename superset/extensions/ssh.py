@@ -23,7 +23,7 @@ import sshtunnel
 from flask import Flask
 from paramiko import RSAKey
 
-from superset.commands.database.ssh_tunnel.exceptions import SSHTunnelDatabasePortError
+from superset.commands.database.exceptions import SSHTunnelDatabasePortError
 from superset.databases.utils import make_url_safe
 from superset.utils.class_utils import load_class_from_name
 

@@ -39,8 +39,8 @@ from sqlalchemy import MetaData
 from werkzeug.datastructures import FileStorage
 
 from superset import db, is_feature_enabled
-from superset.commands.database.exceptions import DatabaseInvalidError
-from superset.commands.database.ssh_tunnel.exceptions import (
+from superset.commands.database.exceptions import (
+    DatabaseInvalidError,
     SSHTunnelingNotEnabledError,
     SSHTunnelInvalidCredentials,
     SSHTunnelMissingCredentials,

@@ -22,6 +22,7 @@ from flask import current_app as app
 from flask_appbuilder.models.sqla import Model
 from marshmallow import ValidationError
 
+from superset import is_feature_enabled
 from superset.commands.base import BaseCommand
 from superset.commands.database.exceptions import (
     DatabaseConnectionFailedError,
@@ -29,8 +30,6 @@ from superset.commands.database.exceptions import (
     DatabaseExistsValidationError,
     DatabaseInvalidError,
     DatabaseRequiredFieldValidationError,
-)
-from superset.commands.database.ssh_tunnel.exceptions import (
     SSHTunnelCreateFailedError,
     SSHTunnelDatabasePortError,
     SSHTunnelingNotEnabledError,
@@ -56,9 +55,6 @@ class CreateDatabaseCommand(BaseCommand):
     @transaction(on_error=partial(on_error, reraise=DatabaseCreateFailedError))
     def run(self) -> Model:
         self.validate()
-
-        if "sqlalchemy_uri" not in self._properties:
-            raise DatabaseRequiredFieldValidationError("sqlalchemy_uri")
 
         url = make_url_safe(self._properties["sqlalchemy_uri"])
         engine = url.get_backend_name()
@@ -119,6 +115,11 @@ class CreateDatabaseCommand(BaseCommand):
 
     def validate(self) -> None:
         exceptions: list[ValidationError] = []
+
+        if self._properties.get("ssh_tunnel") and not is_feature_enabled(
+            "SSH_TUNNELING"
+        ):
+            raise SSHTunnelingNotEnabledError()
 
         sqlalchemy_uri: Optional[str] = self._properties.get("sqlalchemy_uri")
         if not sqlalchemy_uri:

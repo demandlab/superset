@@ -23,7 +23,7 @@ from flask_appbuilder.models.sqla.interface import SQLAInterface
 from sqlalchemy.orm import joinedload
 
 from superset import is_feature_enabled
-from superset.commands.database.ssh_tunnel.exceptions import SSHTunnelingNotEnabledError
+from superset.commands.database.exceptions import SSHTunnelingNotEnabledError
 from superset.connectors.sqla.models import SqlaTable
 from superset.daos.base import BaseDAO
 from superset.databases.filters import DatabaseFilter

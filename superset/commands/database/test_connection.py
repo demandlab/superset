@@ -26,8 +26,6 @@ from superset.commands.database.exceptions import (
     DatabaseSecurityUnsafeError,
     DatabaseTestConnectionDriverError,
     DatabaseTestConnectionUnexpectedError,
-)
-from superset.commands.database.ssh_tunnel.exceptions import (
     SSHTunnelDatabasePortError,
     SSHTunnelingNotEnabledError,
 )

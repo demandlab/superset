@@ -50,14 +50,12 @@ from superset.commands.database.exceptions import (
     DatabaseNotFoundError,
     DatabaseUpdateFailedError,
     InvalidParametersError,
+    SSHTunnelDatabasePortError,
+    SSHTunnelingNotEnabledError,
 )
 from superset.commands.database.export import ExportDatabasesCommand
 from superset.commands.database.importers.dispatcher import ImportDatabasesCommand
 from superset.commands.database.oauth2 import OAuth2StoreTokenCommand
-from superset.commands.database.ssh_tunnel.exceptions import (
-    SSHTunnelDatabasePortError,
-    SSHTunnelingNotEnabledError,
-)
 from superset.commands.database.sync_permissions import SyncPermissionsCommand
 from superset.commands.database.tables import TablesDatabaseCommand
 from superset.commands.database.test_connection import TestConnectionDatabaseCommand

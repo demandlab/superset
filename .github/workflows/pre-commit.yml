@@ -43,6 +43,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Upgrade npm to v11
+        run: npm install -g npm@11.5.2
+
       - name: Install Frontend Dependencies
         run: |
           cd superset-frontend

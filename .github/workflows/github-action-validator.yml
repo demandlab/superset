@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Upgrade npm to v11
+        run: npm install -g npm@11.5.2
+
       - name: Install Dependencies
         run: npm install -g @action-validator/core @action-validator/cli --save-dev
 

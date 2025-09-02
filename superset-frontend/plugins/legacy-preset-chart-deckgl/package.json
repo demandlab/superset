@@ -37,8 +37,6 @@
     "@mapbox/geojson-extent": "^1.0.1",
     "@mapbox/tiny-sdf": "^2.0.6",
     "@math.gl/web-mercator": "^4.1.0",
-    "@storybook/addon-controls": "8.6.14",
-    "@storybook/addon-essentials": "8.6.14",
     "@types/d3-array": "^2.0.0",
     "@types/geojson": "^7946.0.16",
     "bootstrap-slider": "^11.0.2",
@@ -48,7 +46,6 @@
     "mousetrap": "^1.6.5",
     "ngeohash": "^0.6.3",
     "prop-types": "^15.8.1",
-    "react-syntax-highlighter": "15.6.6",
     "underscore": "^1.13.7",
     "urijs": "^1.19.11",
     "xss": "^1.0.15"

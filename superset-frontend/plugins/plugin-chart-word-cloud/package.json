@@ -29,12 +29,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@storybook/addon-controls": "8.6.14",
-    "@storybook/addon-essentials": "8.6.14",
     "@types/d3-scale": "^4.0.9",
     "d3-cloud": "^1.2.7",
-    "encodable": "^0.7.8",
-    "react-syntax-highlighter": "15.6.6"
+    "d3-scale": "^4.0.2",
+    "encodable": "^0.7.8"
   },
   "peerDependencies": {
     "@superset-ui/chart-controls": "*",

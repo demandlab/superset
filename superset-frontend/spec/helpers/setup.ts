@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import './shim';
 // eslint-disable-next-line no-restricted-syntax -- whole React import is required for mocking React module in tests.
 import React from 'react';
 // eslint-disable-next-line no-restricted-imports
@@ -32,20 +33,8 @@ expect.extend(matchers);
 // Allow JSX tests to have React import readily available
 global.React = React;
 
-// Mock window.matchMedia for responsive components (like Ant Design Grid)
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+// Note: SupersetClient configuration, browser API polyfills, and mocks
+// are handled by the shim.tsx import above
 
 // =============================================================================
 // BROWSER API POLYFILLS FOR JEST ENVIRONMENT

@@ -29,8 +29,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Frontend Environment
-        uses: ./.github/actions/setup-frontend/
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: './superset-frontend/.nvmrc'
+
+      - name: Install Dependencies
+        uses: ./.github/actions/cached-dependencies
+        with:
+          run: npm-install
         working-directory: ./superset-frontend
 
       - name: Run Script

@@ -29,9 +29,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Frontend Environment
+      - name: Setup Node.js
         if: steps.check.outputs.frontend
-        uses: ./.github/actions/setup-frontend/
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: './superset-frontend/.nvmrc'
+      - name: Install dependencies
+        if: steps.check.outputs.frontend
+        uses: ./.github/actions/cached-dependencies
+        with:
+          run: npm-install
       - name: lint
         if: steps.check.outputs.frontend
         working-directory: ./superset-frontend

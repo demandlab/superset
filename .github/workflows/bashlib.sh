@@ -31,13 +31,6 @@ say() {
   fi
 }
 
-# npm-install() function removed - all workflows migrated to setup-frontend action
-
-# Frontend functions removed - migrated to setup-frontend action:
-# build-assets() → setup-frontend with build-assets: 'true'
-# build-instrumented-assets() → setup-frontend with build-instrumented: 'true'
-# cypress-install() → setup-frontend with install-cypress: 'true'
-
 setup-postgres() {
   say "::group::Install dependency for unit tests"
   sudo apt-get update && sudo apt-get install --yes libecpg-dev

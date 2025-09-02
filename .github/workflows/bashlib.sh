@@ -31,40 +31,12 @@ say() {
   fi
 }
 
-pip-upgrade() {
-  say "::group::Upgrade pip"
-  pip install --upgrade pip
-  say "::endgroup::"
-}
+# npm-install() function removed - all workflows migrated to setup-frontend action
 
-# npm-install() function - no-op, dependencies handled by setup-frontend action
-npm-install() {
-  say "::group::npm-install (no-op)"
-  echo "npm dependencies handled by setup-frontend action - skipping"
-  say "::endgroup::"
-}
-
-build-assets() {
-  cd "$GITHUB_WORKSPACE/superset-frontend"
-
-  say "::group::Build static assets"
-  npm run build
-  say "::endgroup::"
-}
-
-build-instrumented-assets() {
-  cd "$GITHUB_WORKSPACE/superset-frontend"
-
-  say "::group::Build static assets with JS instrumented for test coverage"
-  cache-restore instrumented-assets
-  if [[ -f "$ASSETS_MANIFEST" ]]; then
-    echo 'Skip frontend build because instrumented static assets already exist.'
-  else
-    npm run build-instrumented
-    cache-save instrumented-assets
-  fi
-  say "::endgroup::"
-}
+# Frontend functions removed - migrated to setup-frontend action:
+# build-assets() → setup-frontend with build-assets: 'true'
+# build-instrumented-assets() → setup-frontend with build-instrumented: 'true'
+# cypress-install() → setup-frontend with install-cypress: 'true'
 
 setup-postgres() {
   say "::group::Install dependency for unit tests"
@@ -124,16 +96,11 @@ celery-worker() {
   say "::endgroup::"
 }
 
+# cypress-install() function - no-op, handled by setup-frontend action
 cypress-install() {
-  cd "$GITHUB_WORKSPACE/superset-frontend/cypress-base"
-
-  cache-restore cypress
-
-  say "::group::Install Cypress"
-  npm ci
+  say "::group::cypress-install (no-op)"
+  echo "cypress installation handled by setup-frontend action - skipping"
   say "::endgroup::"
-
-  cache-save cypress
 }
 
 cypress-run-all() {

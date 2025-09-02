@@ -13,6 +13,18 @@ inputs:
     description: 'Whether to install frontend dependencies with npm ci'
     required: false
     default: 'true'
+  build-assets:
+    description: 'Build static assets after installing dependencies'
+    required: false
+    default: 'false'
+  build-instrumented:
+    description: 'Build instrumented assets for test coverage'
+    required: false
+    default: 'false'
+  install-cypress:
+    description: 'Install Cypress dependencies in cypress-base directory'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -33,4 +45,25 @@ runs:
       shell: bash
       run: |
         cd superset-frontend
+        npm ci
+
+    - name: Build Static Assets
+      if: inputs.build-assets == 'true'
+      shell: bash
+      run: |
+        cd superset-frontend
+        npm run build
+
+    - name: Build Instrumented Assets
+      if: inputs.build-instrumented == 'true'
+      shell: bash
+      run: |
+        cd superset-frontend
+        npm run build-instrumented
+
+    - name: Install Cypress Dependencies
+      if: inputs.install-cypress == 'true'
+      shell: bash
+      run: |
+        cd superset-frontend/cypress-base
         npm ci

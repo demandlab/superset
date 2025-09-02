@@ -121,7 +121,7 @@ module.exports = {
     'lodash',
     'theme-colors',
     'icons',
-    'i18n-strings',
+    'superset-i18n',
     'react-prefer-function-component',
     'prettier',
   ],
@@ -392,7 +392,7 @@ module.exports = {
       rules: {
         'theme-colors/no-literal-colors': 0,
         'icons/no-fa-icons-usage': 0,
-        'i18n-strings/no-template-vars': 0,
+        'superset-i18n/no-template-vars': 0,
         'no-restricted-imports': 0,
         'react/no-void-elements': 0,
       },
@@ -402,8 +402,8 @@ module.exports = {
   rules: {
     'theme-colors/no-literal-colors': 'error',
     'icons/no-fa-icons-usage': 'error',
-    'i18n-strings/no-template-vars': ['error', true],
-    'i18n-strings/sentence-case-buttons': 'error',
+    'superset-i18n/no-template-vars': ['error', true],
+    'superset-i18n/sentence-case-buttons': 'error',
     camelcase: [
       'error',
       {

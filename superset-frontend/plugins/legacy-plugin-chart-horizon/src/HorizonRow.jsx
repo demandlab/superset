@@ -22,7 +22,7 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { extent as d3Extent } from 'd3-array';
-import { scaleLinear } from 'd3-scale';
+import { createLinearScale } from '@superset-ui/core';
 
 export const DEFAULT_COLORS = [
   '#313695',
@@ -119,7 +119,7 @@ class HorizonRow extends PureComponent {
 
       // Create y-scale
       const [min, max] = yDomain || d3Extent(data, d => d.y);
-      const y = scaleLinear()
+      const y = createLinearScale()
         .domain([0, Math.max(-min, max)])
         .range([0, height]);
 

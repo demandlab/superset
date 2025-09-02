@@ -36,9 +36,9 @@ import {
   JsonValue,
   QueryFormData,
   SetDataMaskHook,
+  ScaleLinear,
 } from '@superset-ui/core';
 import { Layer, PickingInfo, Color } from '@deck.gl/core';
-import { ScaleLinear } from 'd3-scale';
 import { ColorBreakpointType } from '../types';
 import sandboxedEval from '../utils/sandbox';
 import { TooltipProps } from '../components/Tooltip';

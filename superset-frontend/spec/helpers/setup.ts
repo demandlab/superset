@@ -47,34 +47,6 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Suppress specific deprecation warnings during tests
-const originalWarn = console.warn;
-const originalError = console.error;
-
-console.warn = function (message, ...args) {
-  // Skip babel-plugin-lodash and punycode deprecation warnings
-  if (
-    typeof message === 'string' &&
-    (message.includes('`isModuleDeclaration` has been deprecated') ||
-      message.includes('punycode') ||
-      message.includes('DEP0040'))
-  ) {
-    return undefined;
-  }
-  return originalWarn.call(console, message, ...args);
-};
-
-console.error = function (message, ...args) {
-  // Skip babel-plugin-lodash deprecation trace
-  if (
-    typeof message === 'string' &&
-    message.includes('`isModuleDeclaration` has been deprecated')
-  ) {
-    return undefined;
-  }
-  return originalError.call(console, message, ...args);
-};
-
 // =============================================================================
 // BROWSER API POLYFILLS FOR JEST ENVIRONMENT
 // =============================================================================

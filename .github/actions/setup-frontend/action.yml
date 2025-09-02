@@ -1,0 +1,34 @@
+name: 'Setup Frontend Environment'
+description: 'Set up Node.js, npm v11, and install frontend dependencies.'
+inputs:
+  node-version:
+    description: 'Node.js version to set up. Defaults to reading from .nvmrc file.'
+    required: false
+    default: ''
+  npm-version:
+    description: 'npm version to install. Defaults to 11.5.2'
+    required: false
+    default: '11.5.2'
+  install-dependencies:
+    description: 'Whether to install frontend dependencies with npm ci'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ${{ inputs.node-version != '' && inputs.node-version || './superset-frontend/.nvmrc' }}
+
+    - name: Upgrade npm to v11
+      shell: bash
+      run: npm install -g npm@${{ inputs.npm-version }}
+
+    - name: Install Frontend Dependencies
+      if: inputs.install-dependencies == 'true'
+      shell: bash
+      run: |
+        cd superset-frontend
+        npm ci

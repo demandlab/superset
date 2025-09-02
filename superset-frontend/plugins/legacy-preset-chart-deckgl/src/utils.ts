@@ -18,10 +18,8 @@
  * under the License.
  */
 import { extent } from 'd3-array';
+import { ScaleLinear, ScaleThreshold, scaleThreshold } from 'd3-scale';
 import {
-  createThresholdScale,
-  ScaleLinear,
-  ScaleThreshold,
   getSequentialSchemeRegistry,
   JsonObject,
   QueryFormData,
@@ -145,7 +143,9 @@ export function getBreakPointColorScaler(
     bucketedColors.push(last);
 
     const points = breakPoints.map(parseFloat);
-    scaler = createThresholdScale().domain(points).range(bucketedColors);
+    scaler = scaleThreshold<number, string>()
+      .domain(points)
+      .range(bucketedColors);
     maskPoint = value => !!value && (value > points[n] || value < points[0]);
   } else {
     // interpolate colors linearly

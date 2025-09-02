@@ -36,8 +36,8 @@ import {
   JsonValue,
   QueryFormData,
   SetDataMaskHook,
-  ScaleLinear,
 } from '@superset-ui/core';
+import { ScaleLinear } from 'd3-scale';
 import { Layer, PickingInfo, Color } from '@deck.gl/core';
 import { ColorBreakpointType } from '../types';
 import sandboxedEval from '../utils/sandbox';
@@ -226,7 +226,9 @@ export const getColorRange = ({
   switch (colorSchemeType) {
     case COLOR_SCHEME_TYPES.linear_palette:
     case COLOR_SCHEME_TYPES.categorical_palette: {
-      colorRange = colorScale?.range().map(color => hexToRGB(color)) as Color[];
+      colorRange = colorScale
+        ?.range()
+        .map((color: string) => hexToRGB(color)) as Color[];
       break;
     }
     case COLOR_SCHEME_TYPES.color_breakpoints: {

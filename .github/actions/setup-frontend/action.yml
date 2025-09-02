@@ -17,10 +17,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup Node.js
+    - name: Setup Node.js with npm caching
       uses: actions/setup-node@v4
       with:
         node-version-file: ${{ inputs.node-version != '' && inputs.node-version || './superset-frontend/.nvmrc' }}
+        cache: 'npm'
+        cache-dependency-path: './superset-frontend/package-lock.json'
 
     - name: Upgrade npm to v11
       shell: bash

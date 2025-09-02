@@ -37,18 +37,11 @@ pip-upgrade() {
   say "::endgroup::"
 }
 
-# prepare (lint and build) frontend code
+# npm-install() function - no-op, dependencies handled by setup-frontend action
 npm-install() {
-  cd "$GITHUB_WORKSPACE/superset-frontend"
-
-  # cache-restore npm
-  say "::group::Install npm packages"
-  echo "npm: $(npm --version)"
-  echo "node: $(node --version)"
-  npm ci
+  say "::group::npm-install (no-op)"
+  echo "npm dependencies handled by setup-frontend action - skipping"
   say "::endgroup::"
-
-  # cache-save npm
 }
 
 build-assets() {

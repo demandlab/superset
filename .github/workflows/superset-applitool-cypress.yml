@@ -66,10 +66,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: './superset-frontend/.nvmrc'
-      - name: Install npm dependencies
-        uses: ./.github/actions/cached-dependencies
-        with:
-          run: npm-install
+      - name: Setup Frontend Environment
+        uses: ./.github/actions/setup-frontend/
       - name: Build javascript packages
         uses: ./.github/actions/cached-dependencies
         with:

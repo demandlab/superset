@@ -32,13 +32,13 @@ export const createLinearScale = () => {
   };
 
   scale.domain = (newDomain?: number[]) => {
-    if (!newDomain) return domain;
+    if (newDomain === undefined) return domain;
     domain = newDomain;
     return scale;
   };
 
   scale.range = (newRange?: number[]) => {
-    if (!newRange) return range;
+    if (newRange === undefined) return range;
     range = newRange;
     return scale;
   };
@@ -55,20 +55,20 @@ export const createThresholdScale = <T>() => {
   let range: T[] = [];
 
   const scale = (value: number): T => {
-    for (let i = 0; i < domain.length; i++) {
+    for (let i = 0; i < domain.length; i += 1) {
       if (value <= domain[i]) return range[i];
     }
     return range[range.length - 1];
   };
 
   scale.domain = (newDomain?: number[]) => {
-    if (!newDomain) return domain;
+    if (newDomain === undefined) return domain;
     domain = newDomain;
     return scale;
   };
 
   scale.range = (newRange?: T[]) => {
-    if (!newRange) return range;
+    if (newRange === undefined) return range;
     range = newRange;
     return scale;
   };
@@ -77,14 +77,18 @@ export const createThresholdScale = <T>() => {
 };
 
 // Type definitions for compatibility with d3-scale patterns
-export type ScaleLinear<T, U> = {
+export interface ScaleLinear<T, U> {
   (value: T): U;
-  domain(newDomain?: T[]): T[] | ScaleLinear<T, U>;
-  range(newRange?: U[]): U[] | ScaleLinear<T, U>;
-};
+  domain(): T[];
+  domain(newDomain: T[]): ScaleLinear<T, U>;
+  range(): U[];
+  range(newRange: U[]): ScaleLinear<T, U>;
+}
 
-export type ScaleThreshold<T, U> = {
+export interface ScaleThreshold<T, U> {
   (value: T): U;
-  domain(newDomain?: T[]): T[] | ScaleThreshold<T, U>;
-  range(newRange?: U[]): U[] | ScaleThreshold<T, U>;
-};
+  domain(): T[];
+  domain(newDomain: T[]): ScaleThreshold<T, U>;
+  range(): U[];
+  range(newRange: U[]): ScaleThreshold<T, U>;
+}

@@ -1,5 +1,5 @@
 name: 'Setup Frontend Environment'
-description: 'Set up Node.js, npm v11, and install frontend dependencies.'
+description: 'Set up Node.js v20, npm v11, and install frontend dependencies. Uses Node v20 due to Docker memory constraints in GitHub Actions with v22.'
 inputs:
   node-version:
     description: 'Node.js version to set up. Defaults to reading from .nvmrc file.'

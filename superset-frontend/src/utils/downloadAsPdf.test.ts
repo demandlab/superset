@@ -45,8 +45,13 @@ test('downloadAsPdf should be callable without throwing', () => {
 
   // The function should return an event handler that doesn't throw when called
   const handler = downloadAsPdf('#test-element', 'test-file');
+  const mockEvent = {
+    currentTarget: {
+      closest: jest.fn().mockReturnValue(element),
+    },
+  };
   expect(() => {
-    handler({} as any); // Mock event object
+    handler(mockEvent as any);
   }).not.toThrow();
 
   // Cleanup
@@ -55,7 +60,12 @@ test('downloadAsPdf should be callable without throwing', () => {
 
 test('downloadAsPdf should handle missing element gracefully', () => {
   const handler = downloadAsPdf('#non-existent-element', 'test-file');
+  const mockEvent = {
+    currentTarget: {
+      closest: jest.fn().mockReturnValue(null),
+    },
+  };
   expect(() => {
-    handler({} as any); // Mock event object
+    handler(mockEvent as any);
   }).not.toThrow();
 });

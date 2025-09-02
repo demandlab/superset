@@ -31,3 +31,60 @@ expect.extend(matchers);
 
 // Allow JSX tests to have React import readily available
 global.React = React;
+
+// Mock window.matchMedia for responsive components (like Ant Design Grid)
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Suppress specific deprecation warnings during tests
+const originalWarn = console.warn;
+const originalError = console.error;
+
+console.warn = function (message, ...args) {
+  // Skip babel-plugin-lodash and punycode deprecation warnings
+  if (
+    typeof message === 'string' &&
+    (message.includes('`isModuleDeclaration` has been deprecated') ||
+      message.includes('punycode') ||
+      message.includes('DEP0040'))
+  ) {
+    return undefined;
+  }
+  return originalWarn.call(console, message, ...args);
+};
+
+console.error = function (message, ...args) {
+  // Skip babel-plugin-lodash deprecation trace
+  if (
+    typeof message === 'string' &&
+    message.includes('`isModuleDeclaration` has been deprecated')
+  ) {
+    return undefined;
+  }
+  return originalError.call(console, message, ...args);
+};
+
+// =============================================================================
+// BROWSER API POLYFILLS FOR JEST ENVIRONMENT
+// =============================================================================
+//
+// Using 'jest-fixed-jsdom' instead of 'jest-environment-jsdom' to fix missing browser APIs.
+//
+// ISSUE: npm v11 upgrade caused modern packages to require browser APIs unavailable in Node.js:
+// - TextEncoder/TextDecoder (jspdf 3.x), structuredClone (geostyler), matchMedia (Ant Design)
+//
+// SOLUTION: jest-fixed-jsdom provides comprehensive browser API polyfills while preserving Node.js globals.
+// See: https://github.com/mswjs/jest-fixed-jsdom
+//
+// Configured in jest.config.js → testEnvironment: 'jest-fixed-jsdom'

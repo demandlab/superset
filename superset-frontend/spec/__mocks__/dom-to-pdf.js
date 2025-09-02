@@ -16,18 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// eslint-disable-next-line no-restricted-syntax -- whole React import is required for mocking React module in tests.
-import React from 'react';
-// eslint-disable-next-line no-restricted-imports
-import { configure as configureTestingLibrary } from '@testing-library/react';
-import { matchers } from '@emotion/jest';
 
-configureTestingLibrary({
-  testIdAttribute: 'data-test',
-});
+// Mock dom-to-pdf module for Jest tests
+// The real module requires TextEncoder which isn't available in Node.js test environment
+const domToPdf = jest.fn(() => Promise.resolve());
 
-document.body.innerHTML = '<div id="app" data-bootstrap=""></div>';
-expect.extend(matchers);
-
-// Allow JSX tests to have React import readily available
-global.React = React;
+export default domToPdf;

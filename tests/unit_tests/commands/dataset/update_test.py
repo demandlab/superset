@@ -442,3 +442,113 @@ def test_validate_folders_invalid_uuid(mocker: MockerFixture) -> None:
 
     with pytest.raises(ValidationError):
         FolderSchema(many=True).load(folders)
+
+
+@with_feature_flags(DATASET_FOLDERS=True)
+def test_validate_folders_with_new_metrics_and_columns(mocker: MockerFixture) -> None:
+    """
+    Test that new metrics and columns from the payload are recognized in folders.
+    This tests the fix for the issue where creating a metric/column and adding it
+    to a folder in the same API call was failing.
+    """
+    # Existing metrics and columns (empty in this case, simulating a new dataset)
+    existing_metrics: list[Any] = []
+    existing_columns: list[Any] = []
+
+    # New metrics and columns being added in the same payload
+    new_metrics = [
+        {
+            "expression": "COUNT(*)",
+            "metric_name": "Test metric",
+            "metric_type": "count",
+            "uuid": "9cffd652-fa09-4701-8d60-c159da361ead",
+        }
+    ]
+    new_columns = [
+        {
+            "column_name": "test_column",
+            "type": "VARCHAR",
+            "uuid": "a1234567-89ab-cdef-0123-456789abcdef",
+        }
+    ]
+
+    # Folders referencing the new metric and column
+    folders = cast(
+        list[FolderSchema],
+        [
+            {
+                "uuid": "509374ae-09c8-443a-874e-769a74e9514a",
+                "type": "folder",
+                "name": "Test folder",
+                "children": [
+                    {
+                        "uuid": "9cffd652-fa09-4701-8d60-c159da361ead",
+                        "type": "metric",
+                        "name": "Test metric",
+                    },
+                    {
+                        "uuid": "a1234567-89ab-cdef-0123-456789abcdef",
+                        "type": "column",
+                        "name": "test_column",
+                    },
+                ],
+            },
+        ],
+    )
+
+    # This should not raise an error as the new UUIDs are provided
+    validate_folders(
+        folders=folders,
+        metrics=existing_metrics,
+        columns=existing_columns,
+        new_metrics=new_metrics,
+        new_columns=new_columns,
+    )
+
+
+@with_feature_flags(DATASET_FOLDERS=True)
+def test_validate_folders_with_invalid_new_uuid(mocker: MockerFixture) -> None:
+    """
+    Test that invalid UUIDs still raise errors even when checking new metrics/columns.
+    """
+    existing_metrics: list[Any] = []
+    existing_columns: list[Any] = []
+
+    # New metrics being added in the same payload
+    new_metrics = [
+        {
+            "expression": "COUNT(*)",
+            "metric_name": "Test metric",
+            "metric_type": "count",
+            "uuid": "valid-uuid-1234",
+        }
+    ]
+
+    # Folders referencing a non-existent UUID
+    folders = cast(
+        list[FolderSchema],
+        [
+            {
+                "uuid": "folder-uuid",
+                "type": "folder",
+                "name": "Test folder",
+                "children": [
+                    {
+                        "uuid": "non-existent-uuid",  # This UUID doesn't exist anywhere
+                        "type": "metric",
+                    },
+                ],
+            },
+        ],
+    )
+
+    # This should raise an error as the UUID doesn't exist
+    with pytest.raises(ValidationError) as excinfo:
+        validate_folders(
+            folders=folders,
+            metrics=existing_metrics,
+            columns=existing_columns,
+            new_metrics=new_metrics,
+            new_columns=[],
+        )
+    assert str(excinfo.value) == "Invalid UUID: non-existent-uuid"

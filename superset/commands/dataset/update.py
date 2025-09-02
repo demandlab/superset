@@ -176,7 +176,13 @@ class UpdateDatasetCommand(UpdateMixin, BaseCommand):
 
         if folders := self._properties.get("folders"):
             try:
-                validate_folders(folders, self._model.metrics, self._model.columns)
+                validate_folders(
+                    folders,
+                    self._model.metrics,
+                    self._model.columns,
+                    self._properties.get("metrics", []),
+                    self._properties.get("columns", []),
+                )
             except ValidationError as ex:
                 exceptions.append(ex)
 
@@ -241,6 +247,8 @@ def validate_folders(  # noqa: C901
     folders: list[FolderSchema],
     metrics: list[SqlMetric],
     columns: list[TableColumn],
+    new_metrics: list[dict[str, Any]] | None = None,
+    new_columns: list[dict[str, Any]] | None = None,
 ) -> None:
     """
     Additional folder validation.
@@ -256,6 +264,16 @@ def validate_folders(  # noqa: C901
         *[metric.uuid for metric in metrics],
         *[column.uuid for column in columns],
     }
+
+    # Add UUIDs from new metrics and columns in the payload
+    if new_metrics:
+        existing.update(
+            metric.get("uuid") for metric in new_metrics if metric.get("uuid")
+        )
+    if new_columns:
+        existing.update(
+            column.get("uuid") for column in new_columns if column.get("uuid")
+        )
 
     queue: list[tuple[FolderSchema, list[str]]] = [(folder, []) for folder in folders]
     seen_uuids = set()

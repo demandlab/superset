@@ -1,0 +1,136 @@
+substitutions:
+  _APP_NAME: 'insentric-superset'
+  _SUPERSET_VERSION: '5.0.0'
+  _GTM_CONTAINER_ID: 'GTM-M8KZ9DR7'
+
+steps:
+- id: 'clone-superset'
+  name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'bash'
+  args: ['-c', 'git clone https://github.com/apache/superset.git /workspace/superset && cd /workspace/superset && git checkout tags/${_SUPERSET_VERSION}']
+
+- id: 'pick-additional-commits'
+  name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'bash'
+  args: [
+    '-c', 
+    'git cherry-pick --no-commit cb6342fc736a425a00732ef518a04fd4f5bff1d8' # Fix tool tip styling: https://github.com/apache/superset/commit/cb6342fc736a425a00732ef518a04fd4f5bff1d8
+  ]
+  dir: '/workspace/superset'
+
+- id: 'change-docker-scripts-permissions'
+  name: 'ubuntu'
+  args: ['bash', '-c', 'chmod -R +x ./docker']
+  dir: '/workspace/superset'
+
+- id: 'customize-superset'
+  name: 'node:18'
+  entrypoint: 'sh'
+  dir: '/workspace'
+  args: ['/workspace/build/customize.sh']
+  env: ['GTM_CONTAINER_ID=${_GTM_CONTAINER_ID}']
+
+- id: 'build-insentric-superset-build'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--target', 'lean', '-t', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/insentric-superset-build:${TAG_NAME}', '.']
+  dir: '/workspace/superset'
+  env: ['DOCKER_BUILDKIT=1']
+
+- id: 'push-insentric-superset-build'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/insentric-superset-build:${TAG_NAME}']
+
+- id: 'build-init-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'    
+  args: 
+    - -c
+    - |
+      docker build \
+      -t us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-init:${TAG_NAME} \
+      --target init \
+      --build-arg GOOGLE_AUTH_CLIENT_SECRET=$$GOOGLE_AUTH_CLIENT_SECRET \
+      --build-arg GOOGLE_AUTH_CLIENT_ID=$$GOOGLE_AUTH_CLIENT_ID \
+      --build-arg SMTP_USER=$$MAILERSEND_SMTP_USER \
+      --build-arg SMTP_PASSWORD=$$MAILERSEND_SMTP_PASSWORD \
+      --build-arg INSENTRIC_SUPERSET_VERSION=${TAG_NAME} \
+      .
+  secretEnv: ['GOOGLE_AUTH_CLIENT_SECRET', 'GOOGLE_AUTH_CLIENT_ID', 'MAILERSEND_SMTP_USER', 'MAILERSEND_SMTP_PASSWORD']
+
+- id: 'build-celery-worker-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'    
+  args: 
+    - -c
+    - |
+      docker build \
+      -t us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-worker:${TAG_NAME} \
+      --target celery_worker \
+      --build-arg GOOGLE_AUTH_CLIENT_SECRET=$$GOOGLE_AUTH_CLIENT_SECRET \
+      --build-arg GOOGLE_AUTH_CLIENT_ID=$$GOOGLE_AUTH_CLIENT_ID \
+      --build-arg SMTP_USER=$$MAILERSEND_SMTP_USER \
+      --build-arg SMTP_PASSWORD=$$MAILERSEND_SMTP_PASSWORD \
+      --build-arg INSENTRIC_SUPERSET_VERSION=${TAG_NAME} \
+      .
+  secretEnv: ['GOOGLE_AUTH_CLIENT_SECRET', 'GOOGLE_AUTH_CLIENT_ID', 'MAILERSEND_SMTP_USER', 'MAILERSEND_SMTP_PASSWORD']
+
+- id: 'build-celery-beat-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'    
+  args: 
+    - -c
+    - |
+      docker build \
+      -t us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-beat:${TAG_NAME} \
+      --target celery_beat \
+      --build-arg GOOGLE_AUTH_CLIENT_SECRET=$$GOOGLE_AUTH_CLIENT_SECRET \
+      --build-arg GOOGLE_AUTH_CLIENT_ID=$$GOOGLE_AUTH_CLIENT_ID \
+      --build-arg SMTP_USER=$$MAILERSEND_SMTP_USER \
+      --build-arg SMTP_PASSWORD=$$MAILERSEND_SMTP_PASSWORD \
+      --build-arg INSENTRIC_SUPERSET_VERSION=${TAG_NAME} \
+      .
+  secretEnv: ['GOOGLE_AUTH_CLIENT_SECRET', 'GOOGLE_AUTH_CLIENT_ID', 'MAILERSEND_SMTP_USER', 'MAILERSEND_SMTP_PASSWORD']
+ 
+- id: 'build-run-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'    
+  args: 
+    - -c
+    - |
+      docker build \
+      -t us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}:${TAG_NAME} \
+      --target run \
+      --build-arg GOOGLE_AUTH_CLIENT_SECRET=$$GOOGLE_AUTH_CLIENT_SECRET \
+      --build-arg GOOGLE_AUTH_CLIENT_ID=$$GOOGLE_AUTH_CLIENT_ID \
+      --build-arg SMTP_USER=$$MAILERSEND_SMTP_USER \
+      --build-arg SMTP_PASSWORD=$$MAILERSEND_SMTP_PASSWORD \
+      --build-arg INSENTRIC_SUPERSET_VERSION=${TAG_NAME} \
+      .
+  secretEnv: ['GOOGLE_AUTH_CLIENT_SECRET', 'GOOGLE_AUTH_CLIENT_ID', 'MAILERSEND_SMTP_USER', 'MAILERSEND_SMTP_PASSWORD']
+
+- id: 'push-init-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '-a', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-init']
+
+- id: 'push-worker-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '-a', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-worker']
+
+- id: 'push-beat-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '-a', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}-beat']
+
+- id: 'push-run-docker-image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '-a', 'us-central1-docker.pkg.dev/insentric-root/insentric-docker/${_APP_NAME}']
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/1025069645798/secrets/GOOGLE_AUTH_CLIENT_SECRET/versions/latest
+      env: 'GOOGLE_AUTH_CLIENT_SECRET'
+    - versionName: projects/1025069645798/secrets/GOOGLE_AUTH_CLIENT_ID/versions/latest
+      env: 'GOOGLE_AUTH_CLIENT_ID'
+    - versionName: projects/1025069645798/secrets/MAILERSEND_SMTP_USER/versions/latest
+      env: 'MAILERSEND_SMTP_USER'
+    - versionName: projects/1025069645798/secrets/MAILERSEND_SMTP_PASSWORD/versions/latest
+      env: 'MAILERSEND_SMTP_PASSWORD'

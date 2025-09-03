@@ -25,13 +25,22 @@ import {
   SMART_DATE_ID,
   SMART_DATE_DETAILED_ID,
   SMART_DATE_VERBOSE_ID,
+  FISCAL_YEAR_ID,
+  createFiscalYearFormatter,
+  FISCAL_QUARTER_ID,
+  createFiscalQuarterFormatter,
+  FISCAL_MONTH_ID,
+  createFiscalMonthFormatter,
   createSmartDateFormatter,
   createSmartDateVerboseFormatter,
   createSmartDateDetailedFormatter,
   createMemoryFormatter,
 } from '@superset-ui/core';
+
 import { FormatLocaleDefinition } from 'd3-format';
 import { TimeLocaleDefinition } from 'd3-time-format';
+import { WEEK_IN_YEAR_ID, createWeekInYearFormatter, WEEK_IN_MONTH_ID, createWeekInMonthFormatter, DAY_IN_YEAR_ID, createDayInYearFormatter, DAY_IN_MONTH_ID, createDayInMonthFormatter, DAY_IN_WEEK_ID, createDayInWeekFormatter, DATE_ONLY_ID, createDateOnlyFormatter } from '../../packages/superset-ui-core/src/time-format';
+import { HOUR_IN_DAY_ID, createHourInDayFormatter } from '../../packages/superset-ui-core/src/time-format/formatters/hourInDay';
 
 export default function setupFormatters(
   d3NumberFormat: Partial<FormatLocaleDefinition>,
@@ -101,5 +110,15 @@ export default function setupFormatters(
       SMART_DATE_DETAILED_ID,
       createSmartDateDetailedFormatter(timeFormatterRegistry.d3Format),
     )
+    .registerValue(FISCAL_YEAR_ID, createFiscalYearFormatter())
+    .registerValue(FISCAL_QUARTER_ID, createFiscalQuarterFormatter())
+    .registerValue(FISCAL_MONTH_ID, createFiscalMonthFormatter())
+    .registerValue(WEEK_IN_YEAR_ID, createWeekInYearFormatter())
+    .registerValue(WEEK_IN_MONTH_ID, createWeekInMonthFormatter())
+    .registerValue(DAY_IN_YEAR_ID, createDayInYearFormatter())
+    .registerValue(DAY_IN_MONTH_ID, createDayInMonthFormatter())
+    .registerValue(DAY_IN_WEEK_ID, createDayInWeekFormatter())
+    .registerValue(DATE_ONLY_ID, createDateOnlyFormatter())
+    .registerValue(HOUR_IN_DAY_ID, createHourInDayFormatter())
     .setDefaultKey(SMART_DATE_ID);
 }

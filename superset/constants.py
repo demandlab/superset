@@ -224,8 +224,17 @@ class TimeGrain(StrEnum):
     MONTH = "P1M"
     QUARTER = "P3M"
     QUARTER_YEAR = "P0.25Y"
-    YEAR = "P1Y"
-
+    YEAR = "P1Y",
+    FISCAL_YEAR = "FY",
+    FISCAL_QUARTER = "FQ",
+    FISCAL_MONTH = "FM",
+    WEEK_IN_YEAR = "WY",
+    WEEK_IN_MONTH = "WM",
+    DAY_IN_YEAR = "DY",
+    DAY_IN_MONTH = "DM",
+    DAY_IN_WEEK = "DW",
+    DATE_ONLY = "DO",
+    HOUR_IN_DAY = "HD"
 
 class PandasAxis(int, Enum):
     ROW = 0

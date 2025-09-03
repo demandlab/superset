@@ -49,6 +49,7 @@ from superset.sql_parse import Table
 from superset.superset_typing import ResultSetColumnType
 from superset.utils import core as utils, json
 from superset.utils.hashing import md5_sha_from_str
+from superset import app
 
 try:
     import google.auth
@@ -156,6 +157,9 @@ class BigQueryEngineSpec(BaseEngineSpec):  # pylint: disable=too-many-public-met
         "TIMESTAMP": "TIMESTAMP_TRUNC",
     }
 
+    fiscal_start = app.config['FISCAL_START']
+    fiscal_offset = app.config['FISCAL_OFFSET']
+
     _time_grain_expressions = {
         None: "{col}",
         TimeGrain.SECOND: "CAST(TIMESTAMP_SECONDS("
@@ -183,6 +187,16 @@ class BigQueryEngineSpec(BaseEngineSpec):  # pylint: disable=too-many-public-met
         TimeGrain.MONTH: "{func}({col}, MONTH)",
         TimeGrain.QUARTER: "{func}({col}, QUARTER)",
         TimeGrain.YEAR: "{func}({col}, YEAR)",
+        TimeGrain.FISCAL_YEAR: f"DATE_SUB(DATE_TRUNC(DATE_ADD({{col}}, INTERVAL {fiscal_offset} MONTH), YEAR), INTERVAL {fiscal_offset} MONTH)",
+        TimeGrain.FISCAL_QUARTER: f"DATE_SUB(DATE_TRUNC(DATE_ADD({{col}}, INTERVAL {fiscal_offset} MONTH), QUARTER), INTERVAL {fiscal_offset} MONTH)",
+        TimeGrain.FISCAL_MONTH: "DATE_TRUNC({col}, MONTH)",
+        TimeGrain.WEEK_IN_YEAR: "DATE_TRUNC({col}, WEEK)",
+        TimeGrain.WEEK_IN_MONTH: "CONCAT(FORMAT_DATE('%Y-%m', DATE({col})), ' W', CAST(FLOOR((EXTRACT(DAY FROM {col}) - 1) / 7) + 1 AS STRING))",
+        TimeGrain.DAY_IN_YEAR: "DATE_TRUNC({col}, DAY)",
+        TimeGrain.DAY_IN_MONTH: "DATE_TRUNC({col}, DAY)",
+        TimeGrain.DAY_IN_WEEK: "DATE_TRUNC({col}, DAY)",
+        TimeGrain.DATE_ONLY: "DATE_TRUNC({col}, DAY)",
+        TimeGrain.HOUR_IN_DAY: "DATE_TRUNC({col}, HOUR)",
     }
 
     custom_errors: dict[Pattern[str], tuple[str, SupersetErrorType, dict[str, Any]]] = {

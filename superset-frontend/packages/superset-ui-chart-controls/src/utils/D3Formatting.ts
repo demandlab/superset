@@ -21,6 +21,16 @@ import {
   SMART_DATE_ID,
   NumberFormats,
   getNumberFormatter,
+  FISCAL_YEAR_ID,
+  FISCAL_QUARTER_ID,
+  FISCAL_MONTH_ID,
+  WEEK_IN_YEAR_ID,
+  // WEEK_IN_MONTH_ID,
+  DAY_IN_YEAR_ID,
+  DAY_IN_MONTH_ID,
+  DAY_IN_WEEK_ID,
+  DATE_ONLY_ID,
+  HOUR_IN_DAY_ID,
 } from '@superset-ui/core';
 
 // D3 specific formatting config
@@ -68,6 +78,16 @@ export const D3_TIME_FORMAT_DOCS = t(
 
 export const D3_TIME_FORMAT_OPTIONS: [string, string][] = [
   [SMART_DATE_ID, t('Adaptive formatting')],
+  [FISCAL_YEAR_ID, t('Fiscal Year Formatting')],
+  [FISCAL_QUARTER_ID, t('Fiscal Quarter Formatting')],
+  [FISCAL_MONTH_ID, t('Fiscal Month Formatting')],
+  [WEEK_IN_YEAR_ID, t('Week in Year Formatting')],
+  // [WEEK_IN_MONTH_ID, t('Week in Month Formatting')],
+  [DAY_IN_YEAR_ID, t('Day in Year Formatting')],
+  [DAY_IN_MONTH_ID, t('Day in Month Formatting')],
+  [DAY_IN_WEEK_ID, t('Day in Week Formatting')],
+  [DATE_ONLY_ID, t('Date Only Formatting')],
+  [HOUR_IN_DAY_ID, t('Hour in Day Formatting')],
   ['%d/%m/%Y', '%d/%m/%Y | 14/01/2019'],
   ['%m/%d/%Y', '%m/%d/%Y | 01/14/2019'],
   ['%Y-%m-%d', '%Y-%m-%d | 2019-01-14'],

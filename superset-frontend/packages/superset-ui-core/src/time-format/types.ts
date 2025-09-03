@@ -44,6 +44,16 @@ export const TimeGranularity = {
   MONTH: 'P1M',
   QUARTER: 'P3M',
   YEAR: 'P1Y',
+  FISCAL_YEAR: 'FY',
+  FISCAL_QUARTER: 'FQ',
+  FISCAL_MONTH: 'FM',
+  WEEK_IN_YEAR: 'WY',
+  // WEEK_IN_MONTH: 'WM',
+  DAY_IN_YEAR: 'DY',
+  DAY_IN_MONTH: 'DM',
+  DAY_IN_WEEK: 'DW',
+  DATE_ONLY: 'DO',
+  HOUR_IN_DAY: 'HD',
 } as const;
 
 type ValueOf<T> = T[keyof T];

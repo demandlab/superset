@@ -35,9 +35,6 @@ ENV BUILD_TRANSLATIONS=${BUILD_TRANSLATIONS}
 ARG DEV_MODE="false"           # Skip frontend build in dev mode
 ENV DEV_MODE=${DEV_MODE}
 
-# Upgrade npm to v11 to match package.json requirements
-RUN npm install -g npm@11.5.2
-
 COPY docker/ /app/docker/
 # Arguments for build configuration
 ARG NPM_BUILD_CMD="build"

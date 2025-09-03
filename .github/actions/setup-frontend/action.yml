@@ -6,9 +6,9 @@ inputs:
     required: false
     default: ''
   npm-version:
-    description: 'npm version to install. Defaults to 11.5.2'
+    description: 'npm version to install. Defaults to 10.8.1'
     required: false
-    default: '11.5.2'
+    default: '10.8.1'
   install-dependencies:
     description: 'Whether to install frontend dependencies with npm ci'
     required: false

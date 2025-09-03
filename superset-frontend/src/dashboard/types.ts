@@ -282,4 +282,11 @@ export enum MenuKeys {
   ToggleFullscreen = 'toggle_fullscreen',
   ManageEmbedded = 'manage_embedded',
   ManageEmailReports = 'manage_email_reports',
+
+  /* ************************************************************ */
+  /* Custom added options by Gabor Pecsek on Jul 3, 2025          */
+  /* These options are not part of the original Superset codebase */
+  /* ************************************************************ */
+  ExportIntoMaSystem = 'export_to_ma_system',
+  ExportIntoMa = 'export_to_ma',
 }

@@ -23,6 +23,7 @@ import {
   useState,
   useRef,
   RefObject,
+  useEffect,
 } from 'react';
 
 import { RouteComponentProps, useHistory } from 'react-router-dom';
@@ -55,8 +56,12 @@ import { LOG_ACTIONS_CHART_DOWNLOAD_AS_IMAGE } from 'src/logger/LogUtils';
 import { MenuKeys, RootState } from 'src/dashboard/types';
 import DrillDetailModal from 'src/components/Chart/DrillDetail/DrillDetailModal';
 import { usePermissions } from 'src/hooks/usePermissions';
-import { useCrossFiltersScopingModal } from '../nativeFilters/FilterBar/CrossFilters/ScopingModal/useCrossFiltersScopingModal';
+import { useCrossFiltersScopingModal } from 'src/dashboard/components/nativeFilters/FilterBar/CrossFilters/ScopingModal/useCrossFiltersScopingModal';
 import { ViewResultsModalTrigger } from './ViewResultsModalTrigger';
+import { fetchTags, OBJECT_TYPES } from 'src/features/tags/tags';
+import TagType from 'src/types/TagType';
+import { ExportToMaModalTrigger } from './ExportToMaModalTrigger';
+import SelectTargetListOrCreateNew from './SelectTargetListOrCreateNew';
 
 // TODO: replace 3 dots with an icon
 const VerticalDotsContainer = styled.div`
@@ -173,6 +178,39 @@ const SliceHeaderControls = (
     [],
   );
 
+  // Ref for the export to HubSpot modal
+  // This is used to open the modal when the user clicks on the menu item
+  // It's added by Gabor Pecsek on Jul 3, 2025 and is not part of the original Superset codebase
+  const exportToHubSpotRef: RefObject<any> = useRef(null);
+
+  // Get the list of chart's tags
+  const [tags, setTags] = useState<TagType[]>([]);
+  // Fetch tags on mount or when slice id changes
+  useEffect(() => {
+    try {
+      fetchTags(
+        {
+          objectType: OBJECT_TYPES.CHART,
+          objectId: props.slice.slice_id,
+          includeTypes: false,
+        },
+        (tags: TagType[]) => setTags(tags),
+        (error: Response) => {
+          // Optionally handle error, e.g. show a toast
+          if (props.addDangerToast) {
+            props.addDangerToast(
+              `Error fetching tags: ${error.statusText || error.status}`,
+            );
+          }
+        },
+      );
+    } catch (error) {
+      if (props.addDangerToast) {
+        props.addDangerToast(`Error fetching tags: ${error}`);
+      }
+    }
+  }, [props.slice.slice_id]);
+
   const canEditCrossFilters =
     useSelector<RootState, boolean>(
       ({ dashboardInfo }) => dashboardInfo.dash_edit_perm,
@@ -281,6 +319,12 @@ const SliceHeaderControls = (
         }
         break;
       }
+      case MenuKeys.ExportIntoMaSystem: {
+        if (exportToHubSpotRef.current && !exportToHubSpotRef.current.showModal) {
+          exportToHubSpotRef.current.open(domEvent);
+        }
+        break;
+      }
       default:
         break;
     }
@@ -359,7 +403,7 @@ const SliceHeaderControls = (
         style={{ height: 'auto', lineHeight: 'initial' }}
         data-test="refresh-chart-menu-item"
       >
-        {t('Force refresh')}
+        {t('Force refresh - updated')}
         <RefreshTooltip data-test="dashboard-slice-refresh-tooltip">
           {refreshTooltip}
         </RefreshTooltip>
@@ -513,6 +557,34 @@ const SliceHeaderControls = (
             {t('Download as image')}
           </Menu.Item>
         </Menu.SubMenu>
+      )}
+
+      {/* This is not part of the original superset dropdown menu */}
+      {/* Added by Gabor Pecsek on Aug 15, 2025 */}
+      {/* Only show this option if the chart's tags contain "exportable" */}
+
+      {tags.some(tag => tag.name === 'exportable') && (
+        <>
+          <Menu.Divider />
+
+          <Menu.Item
+            key={MenuKeys.ExportIntoMaSystem}
+            icon={<Icons.ExportOutlined css={dropdownIconsStyles} />}
+          >
+            <ExportToMaModalTrigger
+              triggerNode={
+                <div data-test="view-query-menu-item">
+                  {t('Export list into Hubspot')}
+                </div>
+              }
+              modalRef={exportToHubSpotRef}
+              modalTitle={t('Export list into Hubspot')}
+              modalBody={
+                <SelectTargetListOrCreateNew queryFormData={props.formData} />
+              }
+            />
+          </Menu.Item>
+        </>
       )}
     </Menu>
   );

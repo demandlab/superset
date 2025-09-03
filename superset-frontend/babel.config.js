@@ -96,7 +96,7 @@ module.exports = {
     instrumented: {
       plugins: [
         [
-          'istanbul',
+          'babel-plugin-istanbul',
           {
             exclude: ['plugins/**/*', 'packages/**/*'],
           },

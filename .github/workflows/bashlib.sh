@@ -89,13 +89,6 @@ celery-worker() {
   say "::endgroup::"
 }
 
-# cypress-install() function - no-op, handled by setup-frontend action
-cypress-install() {
-  say "::group::cypress-install (no-op)"
-  echo "cypress installation handled by setup-frontend action - skipping"
-  say "::endgroup::"
-}
-
 cypress-run-all() {
   local USE_DASHBOARD=$1
   local APP_ROOT=$2

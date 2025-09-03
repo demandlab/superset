@@ -133,21 +133,19 @@ export function sleep(time: number) {
 // eslint-disable-next-line no-restricted-imports
 export * from '@testing-library/react';
 export { customRender as render };
-
-// Re-export userEvent directly (v12 doesn't need setup())
-export { userEvent };
+export { default as userEvent } from '@testing-library/user-event';
 
 export async function selectOption(option: string, selectName?: string) {
   const select = screen.getByRole(
     'combobox',
     selectName ? { name: selectName } : {},
   );
-  await userEvent.click(select); // v12 is synchronous
+  await userEvent.click(select);
   const item = await waitFor(() =>
     within(
       // eslint-disable-next-line testing-library/no-node-access
       document.querySelector('.rc-virtual-list')!,
     ).getByText(option),
   );
-  await userEvent.click(item); // v12 is synchronous
+  await userEvent.click(item);
 }

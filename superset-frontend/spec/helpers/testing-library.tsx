@@ -134,21 +134,20 @@ export function sleep(time: number) {
 export * from '@testing-library/react';
 export { customRender as render };
 
-// Setup userEvent for v14+ compatibility - initialize once and re-export
-const user = userEvent.setup();
-export { user as userEvent };
+// Re-export userEvent directly (v12 doesn't need setup())
+export { userEvent };
 
 export async function selectOption(option: string, selectName?: string) {
   const select = screen.getByRole(
     'combobox',
     selectName ? { name: selectName } : {},
   );
-  await user.click(select);
+  await userEvent.click(select); // v12 is synchronous
   const item = await waitFor(() =>
     within(
       // eslint-disable-next-line testing-library/no-node-access
       document.querySelector('.rc-virtual-list')!,
     ).getByText(option),
   );
-  await user.click(item);
+  await userEvent.click(item); // v12 is synchronous
 }

@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - insentric-main
   workflow_dispatch:
 
 permissions:

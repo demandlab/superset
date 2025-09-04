@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.0-ins.2](https://github.com/demandlab/superset/compare/5.0.0-ins.1...5.0.0-ins.2) (2025-09-04)
+
+
+### 🛠️ Chores
+
+* remove github prerelease tag ([e16d534](https://github.com/demandlab/superset/commit/e16d53440dbc543aa2a9e2fe1918c52975de1379))
+
 ## [5.0.0-ins.1](https://github.com/demandlab/superset/compare/5.0.0-ins.0...5.0.0-ins.1) (2025-09-04)
 
 

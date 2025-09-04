@@ -15,11 +15,8 @@ RUN . /app/.venv/bin/activate && \
     uv pip install gunicorn psycopg2-binary sqlalchemy-bigquery authlib google-cloud-bigquery-storage celery pillow firebase_admin "pyjwt<2.10" sentry-sdk[flask]
 
 COPY --chown=superset:superset config/ /app/
-COPY --chown=superset:superset build/assets/insentric-logo.svg /app/superset/static/assets/images/
-COPY --chown=superset:superset build/assets/insentric-favicon.png /app/superset/static/assets/images/
 
-COPY build/replace_vars.sh /app/
-RUN chmod +x /app/replace_vars.sh
+COPY replace_vars.sh /app/
 
 # Set permissions for /tmp directory
 RUN chmod -R 1777 /tmp && \
@@ -30,7 +27,7 @@ ENV GOOGLE_AUTH_CLIENT_ID=${GOOGLE_AUTH_CLIENT_ID}
 ENV SMTP_USER=${SMTP_USER}
 ENV SMTP_PASSWORD=${SMTP_PASSWORD}
 
-RUN /app/replace_vars.sh
+RUN chmod +x  /app/replace_vars.sh
 
 USER superset
 ENV SUPERSET_CONFIG_PATH /app/superset_config.py
@@ -39,8 +36,8 @@ ENV SUPERSET_CONFIG_PATH /app/superset_config.py
 FROM base as init
 
 USER root
-COPY --chown=superset:superset build/init.sh /init.sh
-COPY --chown=superset:superset build/roles.json /roles.json
+COPY --chown=superset:superset init.sh /init.sh
+COPY --chown=superset:superset roles.json /roles.json
 RUN chmod +x /init.sh
 
 ENV PYTHONPATH=/app

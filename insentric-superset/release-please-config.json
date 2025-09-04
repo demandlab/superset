@@ -6,6 +6,7 @@
     "version-file": "insentric-superset/version.txt",
     "prerelease": true,
     "prerelease-type": "ins",
+    "bump-patch-for-minor-pre-major": true,
     "include-v-in-tag": false,
     "include-component-in-tag": false,
     "changelog-path" : "insentric-superset/CHANGELOG.md",

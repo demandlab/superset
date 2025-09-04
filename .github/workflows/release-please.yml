@@ -19,6 +19,5 @@ jobs:
         with:
           token: ${{ secrets.PAT_GITHUB }}
           target-branch: insentric-main
-          prerelease: true
           config-file: insentric-superset/release-please-config.json
           manifest-file: insentric-superset/.release-please-manifest.json

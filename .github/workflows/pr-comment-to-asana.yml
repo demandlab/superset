@@ -1,0 +1,20 @@
+name: Attach PR Review Comments to Asana
+
+on:
+  pull_request_review:
+    types: [submitted, edited]
+
+jobs:
+  create-comment-in-asana-task-job:
+    runs-on: ubuntu-latest
+    name: Create a Comment in Asana Task
+    steps:
+      - name: Create a Comment in Asana
+        uses: Asana/comment-on-task-github-action@latest
+        id: createComment
+        with:
+          asana-secret: ${{ secrets.ASANA_SECRET }}
+          comment-text: "${{ github.event.review.user.login }} commented in GitHub in response to ${{ github.event.pull_request.html_url }} \nPull Review status: ${{ github.event.review.state }} \nComments: ${{ github.event.review.body }}"
+
+      - name: Get Comment Creation Status
+        run: echo "Status is ${{ steps.createComment.outputs.status }}"

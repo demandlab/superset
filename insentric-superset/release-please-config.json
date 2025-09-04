@@ -5,7 +5,6 @@
     "release-type": "simple",
     "version-file": "insentric-superset/version.txt",
     "versioning": "prerelease",
-    "prerelease": true,
     "prerelease-type": "ins",
     "bump-patch-for-minor-pre-major": true,
     "include-v-in-tag": false,

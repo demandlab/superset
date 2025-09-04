@@ -1,0 +1,74 @@
+{
+    "packages": {
+        ".": {}
+    },
+    "release-type": "simple",
+    "version-file": "insentric-superset/version.txt",
+    "prerelease": true,
+    "prerelease-type": "ins",
+    "include-v-in-tag": false,
+    "include-component-in-tag": false,
+    "changelog-path" : "insentric-superset/CHANGELOG.md",
+    "changelog-sections": [
+        {
+            "type": "chore",
+            "section": "🛠️ Chores",
+            "hidden": false
+        },
+        {
+            "type": "ci",
+            "section": "🎡 Continuous Integration",
+            "hidden": false
+        },
+        {
+            "type": "docs",
+            "section": "📚 Documentation",
+            "hidden": false
+        },
+        {
+            "type": "feat",
+            "section": "✨ Features",
+            "hidden": false
+        },
+        {
+            "type": "fix",
+            "section": "🐛 Bug Fixes",
+            "hidden": false
+        },
+        {
+            "type": "perf",
+            "section": "🚀 Performance Improvements",
+            "hidden": false
+        },
+        {
+            "type": "refactor",
+            "section": "🔨 Code Refactoring",
+            "hidden": false
+        },
+        {
+            "type": "revert",
+            "section": "⏪ Reverts",
+            "hidden": false
+        },
+        {
+            "type": "style",
+            "section": "🎨 Styling",
+            "hidden": false
+        },
+        {
+            "type": "test",
+            "section": "🧪 Tests",
+            "hidden": false
+        },
+        {
+            "type": "security",
+            "section": "🔒 Security",
+            "hidden": false
+        },
+        {
+            "type": "config",
+            "section": "⚙️ Configuration",
+            "hidden": false
+        }
+    ]
+}

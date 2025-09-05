@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.0-ins.3](https://github.com/demandlab/insentric-superset/compare/5.0.0-ins.2...5.0.0-ins.3) (2025-09-05)
+
+
+### 🛠️ Chores
+
+* add FISCAL_START to development config.py ([ba0a5c6](https://github.com/demandlab/insentric-superset/commit/ba0a5c6da0f259adf625e80868e35f8b590516f4))
+
 ## [5.0.0-ins.2](https://github.com/demandlab/superset/compare/5.0.0-ins.1...5.0.0-ins.2) (2025-09-04)
 
 

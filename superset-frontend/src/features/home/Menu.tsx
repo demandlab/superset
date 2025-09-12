@@ -34,6 +34,7 @@ import {
   MenuData,
 } from 'src/types/bootstrapTypes';
 import RightMenu from './RightMenu';
+import axiosConfig from 'src/setup/setupAxios';
 
 interface MenuProps {
   data: MenuData;
@@ -139,9 +140,21 @@ export function Menu({
   },
   isFrontendRoute = () => false,
 }: MenuProps) {
+  const [companyLogoUrl, setCompanyLogoUrl] = useState<string>('');
   const [showMenu, setMenu] = useState<MenuMode>('horizontal');
   const screens = useBreakpoint();
   const uiConfig = useUiConfig();
+
+  useEffect(() => {
+    axiosConfig
+      .get('/files/client_logo')
+      .then(res => {
+        if (res.status === 200 && res.data) {
+          setCompanyLogoUrl(res.data);
+        }
+      })
+      .catch(err => console.log('err', err));
+  }, []);
 
   useEffect(() => {
     function handleResize() {
@@ -263,6 +276,18 @@ export function Menu({
           {brand.text && (
             <div className="navbar-brand-text">
               <span>{brand.text}</span>
+            </div>
+          )}
+          {companyLogoUrl && companyLogoUrl !== '' && (
+            <div
+              className="navbar-brand"
+              style={{ borderLeft: '1px solid #E0E0E0' }}
+            >
+              <img
+                src={companyLogoUrl}
+                alt="Company Logo"
+                style={{ width: '124px', objectFit: 'contain' }}
+              />
             </div>
           )}
           <MainNav
